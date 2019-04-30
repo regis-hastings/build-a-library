@@ -34,7 +34,16 @@ class Media {
   }
   
   addRating(newRating) {
-    this._ratings.push(newRating);
+    if (
+      Number.isInteger(newRating) &&
+      newRating <= 5 &&
+      newRating >= 1
+    ) {
+      this._ratings.push(newRating);
+    } else {
+      console.log('Please enter a valid rating');
+    }
+    
   }
 
 }
@@ -57,10 +66,11 @@ class Book extends Media {
 }
 
 class Movie extends Media {
-  constructor(title, director, runtime) {
+  constructor(title, director, runtime, movieCast) {
     super(title);
     this._director = director;
     this._runtime = runtime;
+    this._movieCast = movieCast;
   }
   
   get director() {
@@ -70,20 +80,43 @@ class Movie extends Media {
   get runtime() {
     return this._runtime;
   }
+  
+  get movieCast() {
+    return this._movieCast;
+  }
 }
 
 class CD extends Media {
-  constructor(title, artist) {
+  constructor(title, artist, trackListing) {
     super(title);
     this._artist = artist;
+    this._trackListing = trackListing;
   }
   
   get artist() {
     return this._artist;
   }
+  
+  get trackListing() { 
+    return this._trackListing;
+  }
+  
+  shuffle() {
+    let shufflePlaylist = this._trackListing;
+
+    for (let i = shufflePlaylist.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+      [shufflePlaylist[i], shufflePlaylist[j]] = [shufflePlaylist[j], shufflePlaylist[i]]; // swap elements
+    }
+    return shufflePlaylist;
+  }  
 }
 
 const historyOfEverything = new Book('A Short History of Nearly Everything', 'Bill Bryson', 544)
+
+const speed = new Movie('Speed', 'Jan de Bont', 116);
+
+const evilEmpire = new CD('Evil Empire', 'Rage Against the Machine', ['Bulls on Parade', 'Killing in the Name Of', 'Freedom', 'Vietnow']);
 
 historyOfEverything.toggleCheckOutStatus()
 
@@ -95,8 +128,6 @@ historyOfEverything.addRating(5)
 
 console.log(historyOfEverything.getAverageRating())
 
-const speed = new Movie('Speed', 'Jan de Bont', 116);
-
 speed.toggleCheckOutStatus()
 
 console.log(speed.isCheckedOut)
@@ -106,3 +137,7 @@ speed.addRating(1)
 speed.addRating(5)
 
 console.log(speed.getAverageRating())
+
+console.log(evilEmpire)
+
+console.log(evilEmpire.shuffle())
